@@ -129,7 +129,18 @@
     "goalNamePlaceholder": "np. Wakacje w Grecji",
     "targetAmount": "Kwota docelowa (PLN)",
     "noGoals": "Brak celów budżetowych",
-    "addGoalsToTrack": "Dodaj cele, aby śledzić postępy oszczędzania"
+    "addGoalsToTrack": "Dodaj cele, aby śledzić postępy oszczędzania",
+    "editGoal": "Edytuj cel",
+    "deleteGoal": "Usuń cel",
+    "confirmDeleteGoalMessage": "Czy na pewno chcesz usunąć ten cel?",
+    "deleteGoalWarning": "Tej operacji nie można cofnąć.",
+    "monthlyPaymentCalculator": "Proponowana miesięczna wpłata",
+    "vacationTime": "Czas na wakacje",
+    "months": "miesięcy",
+    "proposedMonthlyPayment": "Proponowana miesięczna wpłata",
+    "shortage": "Zabraknie",
+    "surplus": "Nadwyżka",
+    "addGoalsToCalculate": "Dodaj cele, aby obliczyć miesięczną wpłatę"
   },
   "language": {
     "polish": "Polski",
@@ -137,4 +148,3 @@
     "selectLanguage": "Wybierz język"
   }
 }
-

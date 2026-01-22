@@ -6,7 +6,9 @@ import { BudgetSkeleton } from '../components/SkeletonLoader';
 import BudgetStats from '../components/budget/BudgetStats';
 import TransactionForm from '../components/budget/TransactionForm';
 import GoalsList from '../components/budget/GoalsList';
+import MonthlyPaymentCalculator from '../components/budget/MonthlyPaymentCalculator';
 import AddGoalModal from '../components/budget/AddGoalModal';
+import EditGoalModal from '../components/budget/EditGoalModal';
 import TransactionsList from '../components/budget/TransactionsList';
 
 const BudgetPage: React.FC = () => {
@@ -17,6 +19,9 @@ const BudgetPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [addingGoal, setAddingGoal] = useState(false);
+  const [isEditGoalModalOpen, setIsEditGoalModalOpen] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [updatingGoal, setUpdatingGoal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +40,16 @@ const BudgetPage: React.FC = () => {
     };
 
     fetchData();
+
+    const handleBudgetUpdate = (event: CustomEvent) => {
+      setBudget(event.detail);
+    };
+
+    window.addEventListener('budgetUpdated' as any, handleBudgetUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('budgetUpdated' as any, handleBudgetUpdate as EventListener);
+    };
   }, []);
 
   const handleAddTransaction = async (
@@ -81,6 +96,51 @@ const BudgetPage: React.FC = () => {
     }
   };
 
+  const handleEditGoal = (goal: Goal) => {
+    setEditingGoal(goal);
+    setIsEditGoalModalOpen(true);
+  };
+
+  const handleUpdateGoal = async (id: number, name: string, targetAmount: string) => {
+    setUpdatingGoal(true);
+    try {
+      await budgetService.updateGoal(id, {
+        name,
+        targetAmount
+      });
+      
+      const [updatedBudget, updatedGoals] = await Promise.all([
+        budgetService.getBudget(),
+        budgetService.getGoals()
+      ]);
+      setBudget(updatedBudget);
+      setGoals(updatedGoals);
+      setIsEditGoalModalOpen(false);
+      setEditingGoal(null);
+    } catch (error) {
+      console.error('Error updating goal:', error);
+      throw error;
+    } finally {
+      setUpdatingGoal(false);
+    }
+  };
+
+  const handleDeleteGoal = async (id: number) => {
+    try {
+      await budgetService.deleteGoal(id);
+      
+      const [updatedBudget, updatedGoals] = await Promise.all([
+        budgetService.getBudget(),
+        budgetService.getGoals()
+      ]);
+      setBudget(updatedBudget);
+      setGoals(updatedGoals);
+    } catch (error) {
+      console.error('Error deleting goal:', error);
+      throw error;
+    }
+  };
+
   const totalGoalsAmount = goals.reduce((sum, goal) => {
     return sum + parseFloat(goal.targetAmount || '0');
   }, 0);
@@ -100,6 +160,8 @@ const BudgetPage: React.FC = () => {
         <p className="text-gray-400 text-sm sm:text-base md:text-lg">{t('budget.subtitle')}</p>
       </div>
 
+      <MonthlyPaymentCalculator budget={budget} goals={goals} />
+
       <BudgetStats budget={budget} goals={goals} goalCoverage={goalCoverage} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
@@ -108,6 +170,8 @@ const BudgetPage: React.FC = () => {
           goals={goals}
           budget={budget}
           onAddGoalClick={() => setIsGoalModalOpen(true)}
+          onEditGoal={handleEditGoal}
+          onDeleteGoal={handleDeleteGoal}
         />
       </div>
 
@@ -118,6 +182,17 @@ const BudgetPage: React.FC = () => {
         onClose={() => setIsGoalModalOpen(false)}
         onAdd={handleAddGoal}
         loading={addingGoal}
+      />
+
+      <EditGoalModal
+        isOpen={isEditGoalModalOpen}
+        onClose={() => {
+          setIsEditGoalModalOpen(false);
+          setEditingGoal(null);
+        }}
+        onUpdate={handleUpdateGoal}
+        goal={editingGoal}
+        loading={updatingGoal}
       />
     </div>
   );

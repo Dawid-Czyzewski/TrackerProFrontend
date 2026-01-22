@@ -26,4 +26,18 @@ export const budgetService = {
     const response = await api.post('/budget/goals', data);
     return response.data;
   },
+
+  updateGoal: async (id: number, data: Partial<Goal>): Promise<Goal> => {
+    const response = await api.put(`/budget/goals/${id}`, data);
+    return response.data;
+  },
+
+  deleteGoal: async (id: number): Promise<void> => {
+    await api.delete(`/budget/goals/${id}`);
+  },
+
+  updateVacationMonths: async (vacationMonths: number): Promise<Budget> => {
+    const response = await api.put('/budget/vacation-months', { vacationMonths });
+    return response.data;
+  },
 };

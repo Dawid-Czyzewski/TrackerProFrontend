@@ -129,7 +129,18 @@
     "goalNamePlaceholder": "e.g. Vacation in Greece",
     "targetAmount": "Target amount (PLN)",
     "noGoals": "No budget goals",
-    "addGoalsToTrack": "Add goals to track savings progress"
+    "addGoalsToTrack": "Add goals to track savings progress",
+    "editGoal": "Edit Goal",
+    "deleteGoal": "Delete Goal",
+    "confirmDeleteGoalMessage": "Are you sure you want to delete this goal?",
+    "deleteGoalWarning": "This action cannot be undone.",
+    "monthlyPaymentCalculator": "Proposed Monthly Payment",
+    "vacationTime": "Time until vacation",
+    "months": "months",
+    "proposedMonthlyPayment": "Proposed monthly payment",
+    "shortage": "Shortage",
+    "surplus": "Surplus",
+    "addGoalsToCalculate": "Add goals to calculate monthly payment"
   },
   "language": {
     "polish": "Polski",
@@ -137,4 +148,3 @@
     "selectLanguage": "Select language"
   }
 }
-

@@ -45,6 +45,7 @@ export interface Budget {
   totalDeposits: string;
   totalWithdrawals: string;
   goalsCount: number;
+  vacationMonths: number;
 }
 
 export interface ApplicationStats {

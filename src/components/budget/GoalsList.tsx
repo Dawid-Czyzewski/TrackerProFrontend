@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Budget, Goal } from '../../types';
 
@@ -6,10 +6,35 @@ interface GoalsListProps {
   goals: Goal[];
   budget: Budget | null;
   onAddGoalClick: () => void;
+  onEditGoal: (goal: Goal) => void;
+  onDeleteGoal: (id: number) => Promise<void>;
 }
 
-const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick }) => {
+const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick, onEditGoal, onDeleteGoal }) => {
   const { t } = useTranslation();
+  const [deletingGoal, setDeletingGoal] = useState<Goal | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeleteClick = (goal: Goal) => {
+    setDeletingGoal(goal);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingGoal) return;
+    
+    setDeleting(true);
+    try {
+      await onDeleteGoal(deletingGoal.id);
+      setIsDeleteModalOpen(false);
+      setDeletingGoal(null);
+    } catch (error) {
+      console.error('Error deleting goal:', error);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const formatAmount = (value: string) => {
     return parseFloat(value || '0').toFixed(2).replace('.', ',');
@@ -48,7 +73,7 @@ const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick }) 
           <p className="text-xs sm:text-sm text-gray-500 text-center">{t('budget.addGoalsToTrack')}</p>
         </div>
       ) : (
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-3 sm:space-y-4 max-h-[400px] overflow-y-auto pr-2">
           {goals.map((goal) => {
             const totalDeposits = parseFloat(budget?.totalDeposits || '0');
             const targetAmount = parseFloat(goal.targetAmount || '1');
@@ -58,11 +83,31 @@ const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick }) 
               <div key={goal.id} className="border border-gray-700 rounded-lg p-3 sm:p-4">
                 <div className="flex justify-between items-start mb-2 sm:mb-3">
                   <h3 className="font-semibold text-white text-sm sm:text-base">{goal.name}</h3>
-                  {goal.isCompleted && (
-                    <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-xs font-medium">
-                      {t('application.accepted')}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {goal.isCompleted && (
+                      <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-xs font-medium">
+                        {t('application.accepted')}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => onEditGoal(goal)}
+                      className="p-1.5 sm:p-2 bg-blue-500/20 hover:bg-blue-500/30 active:bg-blue-500/40 text-blue-400 rounded-lg transition-colors touch-manipulation"
+                      title={t('common.edit')}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(goal)}
+                      className="p-1.5 sm:p-2 bg-red-500/20 hover:bg-red-500/30 active:bg-red-500/40 text-red-400 rounded-lg transition-colors touch-manipulation"
+                      title={t('common.delete')}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="mb-2 sm:mb-3">
@@ -96,6 +141,84 @@ const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick }) 
             );
           })}
         </div>
+      )}
+
+      {deletingGoal && (
+        <>
+          <div
+            className={`fixed inset-0 bg-black/50 z-40 ${isDeleteModalOpen ? '' : 'hidden'}`}
+            onClick={() => !deleting && setIsDeleteModalOpen(false)}
+          />
+
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 ${isDeleteModalOpen ? '' : 'hidden'}`}>
+            <div className="bg-gray-800 border border-gray-700 rounded-lg w-full max-w-md p-4 sm:p-6" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-bold text-white">{t('budget.deleteGoal')}</h2>
+                <button
+                  onClick={() => !deleting && setIsDeleteModalOpen(false)}
+                  disabled={deleting}
+                  className="text-gray-400 hover:text-white transition-colors touch-manipulation p-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Close"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="mb-4 sm:mb-6">
+                <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-500/20 rounded-full">
+                  <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <p className="text-gray-300 text-sm sm:text-base text-center mb-2">
+                  {t('budget.confirmDeleteGoalMessage')}
+                </p>
+                <p className="text-white font-semibold text-base sm:text-lg text-center">
+                  {deletingGoal.name}
+                </p>
+                <p className="text-gray-400 text-xs sm:text-sm text-center mt-2">
+                  {t('budget.deleteGoalWarning')}
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  disabled={deleting}
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-white rounded-lg font-medium text-sm sm:text-base transition-colors touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {t('common.cancel')}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  disabled={deleting}
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded-lg font-medium text-sm sm:text-base transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation flex items-center justify-center gap-2"
+                >
+                  {deleting ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>{t('common.deleting')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      <span>{t('common.delete')}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
