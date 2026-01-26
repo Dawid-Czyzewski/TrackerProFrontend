@@ -140,6 +140,40 @@ export const ApplicationsSkeleton: React.FC = () => {
   );
 };
 
+export const SavingsSkeleton: React.FC = () => {
+  return (
+    <div className="max-w-7xl mx-auto space-y-6">
+      <div>
+        <div className="h-6 sm:h-8 md:h-10 bg-gray-800 rounded w-32 sm:w-40 mb-1 sm:mb-2 animate-pulse"></div>
+        <div className="h-4 sm:h-5 md:h-6 bg-gray-800 rounded w-64 sm:w-80 animate-pulse"></div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-32 bg-gray-800 rounded-lg animate-pulse"></div>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 sm:p-6 animate-pulse">
+          <div className="h-5 sm:h-6 bg-gray-700 rounded w-40 mb-4"></div>
+          <div className="h-12 bg-gray-700 rounded-lg mb-4"></div>
+          <div className="flex gap-2">
+            <div className="h-10 flex-1 bg-gray-700 rounded-lg"></div>
+            <div className="h-10 flex-1 bg-gray-700 rounded-lg"></div>
+          </div>
+        </div>
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 sm:p-6 animate-pulse">
+          <div className="h-5 sm:h-6 bg-gray-700 rounded w-28 mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-16 bg-gray-700 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const BudgetSkeleton: React.FC = () => {
   return (
     <div className="space-y-4 sm:space-y-6">

@@ -101,7 +101,8 @@
     "confirmDelete": "Are you sure you want to delete this application?",
     "deleteApplication": "Delete Application",
     "confirmDeleteMessage": "Are you sure you want to delete this application?",
-    "deleteWarning": "This action cannot be undone."
+    "deleteWarning": "This action cannot be undone.",
+    "accepted": "Filled"
   },
   "budget": {
     "title": "Vacation Budget",
@@ -146,6 +147,7 @@
   },
   "savings": {
     "title": "Savings",
+    "subtitle": "Save on small expenses and transfer funds to your vacation budget",
     "currentBalance": "Current Balance",
     "totalSaved": "Total Saved",
     "weeklySavings": "Weekly Savings",

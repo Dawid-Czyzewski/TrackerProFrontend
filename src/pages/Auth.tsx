@@ -86,8 +86,8 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center py-8 px-4 relative">
-      <div className="absolute top-8 right-8">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center py-6 sm:py-8 px-4 relative">
+      <div className="absolute top-6 right-6 sm:top-8 sm:right-8">
         <LanguageSwitcher />
       </div>
       <AuthHeader />

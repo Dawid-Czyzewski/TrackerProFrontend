@@ -74,17 +74,23 @@ const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick, on
         </div>
       ) : (
         <div className="space-y-3 sm:space-y-4 max-h-[400px] overflow-y-auto pr-2">
-          {goals.map((goal) => {
-            const totalDeposits = parseFloat(budget?.totalDeposits || '0');
-            const targetAmount = parseFloat(goal.targetAmount || '1');
-            const progress = Math.min(100, (totalDeposits / targetAmount) * 100);
-            
-            return (
+          {(() => {
+            const sortedGoals = [...goals].sort((a, b) => a.id - b.id);
+            let remaining = parseFloat(budget?.balance || '0');
+            const goalsWithAllocation = sortedGoals.map((g) => {
+              const target = parseFloat(g.targetAmount || '1');
+              const allocated = Math.min(remaining, target);
+              remaining = Math.max(0, remaining - allocated);
+              const progress = target > 0 ? Math.min(100, (allocated / target) * 100) : 0;
+              const isFilled = allocated >= target;
+              return { goal: g, allocated, target, progress, isFilled };
+            });
+            return goalsWithAllocation.map(({ goal, allocated, progress, isFilled }) => (
               <div key={goal.id} className="border border-gray-700 rounded-lg p-3 sm:p-4">
                 <div className="flex justify-between items-start mb-2 sm:mb-3">
                   <h3 className="font-semibold text-white text-sm sm:text-base">{goal.name}</h3>
                   <div className="flex items-center gap-2">
-                    {goal.isCompleted && (
+                    {isFilled && (
                       <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-xs font-medium">
                         {t('application.accepted')}
                       </span>
@@ -113,7 +119,7 @@ const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick, on
                 <div className="mb-2 sm:mb-3">
                   <div className="flex justify-between items-center mb-1.5">
                     <p className="text-gray-300 text-xs sm:text-sm">
-                      {formatAmount(totalDeposits.toString())} / {formatAmount(goal.targetAmount)} zł
+                      {formatAmount(allocated.toFixed(2))} / {formatAmount(goal.targetAmount)} zł
                     </p>
                     <p className="text-gray-400 text-xs sm:text-sm font-medium">
                       {progress.toFixed(0)}%
@@ -123,7 +129,7 @@ const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick, on
                   <div className="w-full bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden">
                     <div 
                       className={`h-full rounded-full transition-all duration-500 ${
-                        goal.isCompleted 
+                        isFilled 
                           ? 'bg-green-500' 
                           : progress >= 75 
                             ? 'bg-green-400' 
@@ -138,8 +144,8 @@ const GoalsList: React.FC<GoalsListProps> = ({ goals, budget, onAddGoalClick, on
                   </div>
                 </div>
               </div>
-            );
-          })}
+            ));
+          })()}
         </div>
       )}
 

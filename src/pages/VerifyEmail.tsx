@@ -35,8 +35,8 @@ const VerifyEmail: React.FC = () => {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black relative">
-      <div className="absolute top-8 right-8">
+    <div className="min-h-screen flex items-center justify-center bg-black py-6 px-4 relative">
+      <div className="absolute top-6 right-6 sm:top-8 sm:right-8">
         <LanguageSwitcher />
       </div>
       <div className="bg-gray-900 border border-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md text-center">

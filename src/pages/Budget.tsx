@@ -45,10 +45,16 @@ const BudgetPage: React.FC = () => {
       setBudget(event.detail);
     };
 
+    const handleTransactionDeleted = () => {
+      fetchData();
+    };
+
     window.addEventListener('budgetUpdated' as any, handleBudgetUpdate as EventListener);
-    
+    window.addEventListener('transactionDeleted', handleTransactionDeleted);
+
     return () => {
       window.removeEventListener('budgetUpdated' as any, handleBudgetUpdate as EventListener);
+      window.removeEventListener('transactionDeleted', handleTransactionDeleted);
     };
   }, []);
 
@@ -145,8 +151,21 @@ const BudgetPage: React.FC = () => {
     return sum + parseFloat(goal.targetAmount || '0');
   }, 0);
 
+  const { totalAllocated } = (() => {
+    const sorted = [...goals].sort((a, b) => a.id - b.id);
+    let remaining = parseFloat(budget?.balance || '0');
+    let total = 0;
+    for (const g of sorted) {
+      const target = parseFloat(g.targetAmount || '0');
+      const allocated = Math.min(remaining, target);
+      total += allocated;
+      remaining = Math.max(0, remaining - allocated);
+    }
+    return { totalAllocated: total };
+  })();
+
   const goalCoverage = totalGoalsAmount > 0
-    ? Math.min(100, (parseFloat(budget?.balance || '0') / totalGoalsAmount) * 100)
+    ? Math.min(100, (totalAllocated / totalGoalsAmount) * 100)
     : 0;
 
   if (loading) {

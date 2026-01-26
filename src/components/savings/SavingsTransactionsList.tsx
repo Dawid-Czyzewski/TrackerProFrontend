@@ -47,6 +47,14 @@ const SavingsTransactionsList: React.FC<SavingsTransactionsListProps> = ({ trans
     });
   };
 
+  const getDisplayDescription = (desc: string | null | undefined): string => {
+    if (!desc) return '';
+    if (desc.startsWith('savings.')) return t(desc);
+    if (desc === 'Oszczędność - nie kupiłem energetyka') return t('savings.energy_drink');
+    if (desc === 'Przeniesienie do budżetu wakacyjnego') return t('savings.transfer_to_vacation');
+    return desc;
+  };
+
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 sm:p-6">
       <h2 className="text-lg sm:text-xl font-bold text-white mb-4">{t('savings.transactions')}</h2>
@@ -72,7 +80,7 @@ const SavingsTransactionsList: React.FC<SavingsTransactionsListProps> = ({ trans
                   </span>
                 </div>
                 {transaction.description && (
-                  <p className="text-xs text-gray-400 mb-1">{transaction.description}</p>
+                  <p className="text-xs text-gray-400 mb-1">{getDisplayDescription(transaction.description)}</p>
                 )}
                 <p className="text-xs text-gray-500">{formatDate(transaction.createdAt)}</p>
               </div>

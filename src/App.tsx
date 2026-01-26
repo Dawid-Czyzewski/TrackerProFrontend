@@ -61,7 +61,7 @@ function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black relative">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-6 right-6 sm:top-8 sm:right-8">
           <LanguageSwitcher />
         </div>
         <div className="flex flex-col items-center">

@@ -101,7 +101,8 @@
     "confirmDelete": "Czy na pewno chcesz usunąć tę aplikację?",
     "deleteApplication": "Usuń aplikację",
     "confirmDeleteMessage": "Czy na pewno chcesz usunąć tę aplikację?",
-    "deleteWarning": "Tej operacji nie można cofnąć."
+    "deleteWarning": "Tej operacji nie można cofnąć.",
+    "accepted": "Wypełnione"
   },
   "budget": {
     "title": "Budżet wakacyjny",
@@ -146,6 +147,7 @@
   },
   "savings": {
     "title": "Oszczędzanie",
+    "subtitle": "Oszczędzaj na drobne wydatki i przenoś środki do budżetu wakacyjnego",
     "currentBalance": "Aktualny stan",
     "totalSaved": "Zaoszczędzone łącznie",
     "weeklySavings": "Oszczędności tygodniowe",

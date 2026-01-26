@@ -17,6 +17,10 @@ export const budgetService = {
     return response.data;
   },
 
+  deleteTransaction: async (id: number): Promise<void> => {
+    await api.delete(`/budget/transactions/${id}`);
+  },
+
   getGoals: async (): Promise<Goal[]> => {
     const response = await api.get('/budget/goals');
     return response.data;

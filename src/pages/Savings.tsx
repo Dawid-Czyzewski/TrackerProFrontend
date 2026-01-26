@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { savingsService, SavingsBudget, SavingsStats, SavingsTransaction } from '../services/savingsService';
+import { SavingsSkeleton } from '../components/SkeletonLoader';
 import SavingsStatsCards from '../components/savings/SavingsStatsCards';
 import EnergyDrinkButton from '../components/savings/EnergyDrinkButton';
 import TransferToVacationModal from '../components/savings/TransferToVacationModal';
@@ -56,7 +57,7 @@ const Savings: React.FC = () => {
       await savingsService.transferToVacation(amount);
       await fetchData();
       setIsTransferModalOpen(false);
-      
+      // Dispatch event to update vacation budget
       window.dispatchEvent(new CustomEvent('budgetUpdated'));
     } catch (error) {
       console.error('Error transferring to vacation:', error);
@@ -87,24 +88,14 @@ const Savings: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-800 rounded w-1/4"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-32 bg-gray-800 rounded"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <SavingsSkeleton />;
   }
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl sm:text-3xl font-bold text-white">{t('savings.title')}</h1>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">{t('savings.title')}</h1>
+        <p className="text-gray-400 text-sm sm:text-base">{t('savings.subtitle')}</p>
       </div>
 
       {stats && <SavingsStatsCards stats={stats} />}

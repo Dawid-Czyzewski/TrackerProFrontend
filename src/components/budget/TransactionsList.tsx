@@ -7,6 +7,8 @@ const TransactionsList: React.FC = () => {
   const { t } = useTranslation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   const fetchTransactions = async () => {
     try {
@@ -28,12 +30,39 @@ const TransactionsList: React.FC = () => {
     const handleTransactionAdded = () => {
       fetchTransactions();
     };
+    const handleTransactionDeleted = () => {
+      fetchTransactions();
+    };
 
     window.addEventListener('transactionAdded', handleTransactionAdded);
+    window.addEventListener('transactionDeleted', handleTransactionDeleted);
     return () => {
       window.removeEventListener('transactionAdded', handleTransactionAdded);
+      window.removeEventListener('transactionDeleted', handleTransactionDeleted);
     };
   }, []);
+
+  const handleDeleteClick = (id: number) => {
+    setDeleteConfirmId(id);
+  };
+
+  const handleConfirmDelete = async (id: number) => {
+    setDeletingId(id);
+    try {
+      await budgetService.deleteTransaction(id);
+      setDeleteConfirmId(null);
+      window.dispatchEvent(new CustomEvent('transactionDeleted'));
+      await fetchTransactions();
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmId(null);
+  };
 
   const formatAmount = (amount: string) => {
     return parseFloat(amount).toFixed(2).replace('.', ',');
@@ -48,6 +77,13 @@ const TransactionsList: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const getDisplayDescription = (desc: string | null | undefined, type: 'deposit' | 'withdrawal'): string => {
+    if (!desc) return type === 'deposit' ? t('budget.deposit') : t('budget.withdrawal');
+    if (desc.startsWith('savings.')) return t(desc);
+    if (desc === 'Przeniesienie z budżetu oszczędzania') return t('savings.transfer_from_savings');
+    return desc;
   };
 
   if (loading) {
@@ -110,7 +146,7 @@ const TransactionsList: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm sm:text-base font-semibold text-white truncate">
-                      {transaction.description || (transaction.type === 'deposit' ? t('budget.deposit') : t('budget.withdrawal'))}
+                      {getDisplayDescription(transaction.description, transaction.type)}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-400 mt-0.5">
                       {formatDate(transaction.createdAt)}
@@ -118,15 +154,46 @@ const TransactionsList: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col items-end">
-                <span className={`text-base sm:text-lg font-bold ${
-                  transaction.type === 'deposit' ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {transaction.type === 'deposit' ? '+' : '-'}{formatAmount(transaction.amount)} zł
-                </span>
-                <span className="text-xs text-gray-500 mt-1">
-                  {transaction.type === 'deposit' ? t('budget.deposit') : t('budget.withdrawal')}
-                </span>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex flex-col items-end">
+                  <span className={`text-base sm:text-lg font-bold ${
+                    transaction.type === 'deposit' ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {transaction.type === 'deposit' ? '+' : '-'}{formatAmount(transaction.amount)} zł
+                  </span>
+                  <span className="text-xs text-gray-500 mt-1">
+                    {transaction.type === 'deposit' ? t('budget.deposit') : t('budget.withdrawal')}
+                  </span>
+                </div>
+                {deleteConfirmId === transaction.id ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleConfirmDelete(transaction.id)}
+                      disabled={deletingId === transaction.id}
+                      className="px-3 py-1.5 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+                    >
+                      {deletingId === transaction.id ? t('common.deleting') : t('common.delete')}
+                    </button>
+                    <button
+                      onClick={handleCancelDelete}
+                      disabled={deletingId === transaction.id}
+                      className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-white rounded text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+                    >
+                      {t('common.cancel')}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleDeleteClick(transaction.id)}
+                    disabled={deletingId !== null}
+                    className="p-1.5 text-gray-400 hover:text-red-400 transition-colors touch-manipulation"
+                    title={t('common.delete')}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
           </div>
