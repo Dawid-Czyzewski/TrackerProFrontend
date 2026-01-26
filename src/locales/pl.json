@@ -9,7 +9,8 @@
     "deleting": "Usuwanie...",
     "edit": "Edytuj",
     "actions": "Akcje",
-    "logout": "Wyloguj się"
+    "logout": "Wyloguj się",
+    "optional": "opcjonalne"
   },
   "auth": {
     "login": "Zaloguj się",
@@ -49,7 +50,8 @@
   "navigation": {
     "dashboard": "Dashboard",
     "applications": "Aplikacje",
-    "budget": "Budżet"
+    "budget": "Budżet",
+    "savings": "Oszczędzanie"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -141,6 +143,37 @@
     "shortage": "Zabraknie",
     "surplus": "Nadwyżka",
     "addGoalsToCalculate": "Dodaj cele, aby obliczyć miesięczną wpłatę"
+  },
+  "savings": {
+    "title": "Oszczędzanie",
+    "currentBalance": "Aktualny stan",
+    "totalSaved": "Zaoszczędzone łącznie",
+    "weeklySavings": "Oszczędności tygodniowe",
+    "thisWeek": "W tym tygodniu",
+    "monthlySavings": "Oszczędności miesięczne",
+    "thisMonth": "W tym miesiącu",
+    "energyDrinkTitle": "Oszczędzanie na energetyku",
+    "saveEnergyDrink": "Zapisz 7 zł",
+    "saving": "Zapisywanie...",
+    "transferToVacation": "Przenieś do budżetu wakacyjnego",
+    "withdraw": "Wypłać",
+    "amount": "Kwota",
+    "description": "Opis",
+    "descriptionPlaceholder": "np. Wypłata na zakupy",
+    "availableBalance": "Dostępne środki",
+    "invalidAmount": "Nieprawidłowa kwota",
+    "insufficientBalance": "Niewystarczające środki",
+    "transferError": "Błąd podczas przenoszenia",
+    "withdrawalError": "Błąd podczas wypłaty",
+    "transfer": "Przenieś",
+    "transactions": "Transakcje",
+    "noTransactions": "Brak transakcji",
+    "deposit": "Wpłata",
+    "withdrawal": "Wypłata",
+    "optional": "opcjonalne",
+    "energy_drink": "Oszczędność - nie kupiłem energetyka",
+    "transfer_to_vacation": "Przeniesienie do budżetu wakacyjnego",
+    "transfer_from_savings": "Przeniesienie z budżetu oszczędzania"
   },
   "language": {
     "polish": "Polski",

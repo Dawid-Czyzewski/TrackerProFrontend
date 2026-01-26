@@ -5,6 +5,7 @@ import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import Applications from './pages/Applications';
 import Budget from './pages/Budget';
+import Savings from './pages/Savings';
 import VerifyEmail from './pages/VerifyEmail';
 import ThankYou from './pages/ThankYou';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -84,6 +85,7 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/applications" element={<Applications />} />
                   <Route path="/budget" element={<Budget />} />
+                  <Route path="/savings" element={<Savings />} />
                   <Route path="/" element={<Navigate to="/dashboard" />} />
                 </Routes>
               </Layout>

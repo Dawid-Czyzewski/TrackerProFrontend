@@ -9,7 +9,8 @@
     "deleting": "Deleting...",
     "edit": "Edit",
     "actions": "Actions",
-    "logout": "Logout"
+    "logout": "Logout",
+    "optional": "optional"
   },
   "auth": {
     "login": "Login",
@@ -49,7 +50,8 @@
   "navigation": {
     "dashboard": "Dashboard",
     "applications": "Applications",
-    "budget": "Budget"
+    "budget": "Budget",
+    "savings": "Savings"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -141,6 +143,37 @@
     "shortage": "Shortage",
     "surplus": "Surplus",
     "addGoalsToCalculate": "Add goals to calculate monthly payment"
+  },
+  "savings": {
+    "title": "Savings",
+    "currentBalance": "Current Balance",
+    "totalSaved": "Total Saved",
+    "weeklySavings": "Weekly Savings",
+    "thisWeek": "This Week",
+    "monthlySavings": "Monthly Savings",
+    "thisMonth": "This Month",
+    "energyDrinkTitle": "Energy Drink Savings",
+    "saveEnergyDrink": "Save 7 PLN",
+    "saving": "Saving...",
+    "transferToVacation": "Transfer to Vacation Budget",
+    "withdraw": "Withdraw",
+    "amount": "Amount",
+    "description": "Description",
+    "descriptionPlaceholder": "e.g. Withdrawal for shopping",
+    "availableBalance": "Available Balance",
+    "invalidAmount": "Invalid amount",
+    "insufficientBalance": "Insufficient balance",
+    "transferError": "Transfer error",
+    "withdrawalError": "Withdrawal error",
+    "transfer": "Transfer",
+    "transactions": "Transactions",
+    "noTransactions": "No transactions",
+    "deposit": "Deposit",
+    "withdrawal": "Withdrawal",
+    "optional": "optional",
+    "energy_drink": "Savings - didn't buy energy drink",
+    "transfer_to_vacation": "Transfer to vacation budget",
+    "transfer_from_savings": "Transfer from savings budget"
   },
   "language": {
     "polish": "Polski",

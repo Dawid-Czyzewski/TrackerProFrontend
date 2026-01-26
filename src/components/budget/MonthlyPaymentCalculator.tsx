@@ -27,6 +27,7 @@ const MonthlyPaymentCalculator: React.FC<MonthlyPaymentCalculatorProps> = ({ bud
     try {
       const updatedBudget = await budgetService.updateVacationMonths(vacationMonths);
       setIsEditing(false);
+
       window.dispatchEvent(new CustomEvent('budgetUpdated', { detail: updatedBudget }));
     } catch (error) {
       console.error('Error updating vacation months:', error);
@@ -43,15 +44,12 @@ const MonthlyPaymentCalculator: React.FC<MonthlyPaymentCalculatorProps> = ({ bud
     const totalTargetAmount = goals.reduce((sum, goal) => {
       return sum + parseFloat(goal.targetAmount || '0');
     }, 0);
-
+    
     const totalDeposits = parseFloat(budget?.totalDeposits || '0');
-
     const remainingAmount = Math.max(0, totalTargetAmount - totalDeposits);
 
     const monthlyPayment = Math.floor(remainingAmount / vacationMonths);
-
     const totalCollected = monthlyPayment * vacationMonths;
-
     const shortage = remainingAmount - totalCollected;
 
     return { monthlyPayment, shortage };
